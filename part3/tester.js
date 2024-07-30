@@ -69,26 +69,6 @@ function calculateAccuracy(inputText, sampleText) {
     return Math.round((correctChars / sampleChars.length) * 100);
 }
 
-function storeResults(difficulty, wpm, accuracy) {
-    const results = { wpm, accuracy };
-    localStorage.setItem(difficulty, JSON.stringify(results));
-}
-
-// Function to retrieve results from LocalStorage
-function retrieveResults(difficulty) {
-    const results = localStorage.getItem(difficulty);
-    return results ? JSON.parse(results) : null;
-}
-
-// Function to display previous results
-function displayPreviousResults(difficulty) {
-    const results = retrieveResults(difficulty);
-    if (results) {
-        document.getElementById('previous-wpm-result').textContent = results.wpm;
-    } else {
-        document.getElementById('previous-wpm-result').textContent = 'No previous result';
-    }
-}
 
 // Modify the checkTypingCompletion function to store results
 function checkTypingCompletion() {
@@ -100,10 +80,7 @@ function checkTypingCompletion() {
         const wordCount = sampleText.split(' ').length;
         const wpm = Math.round(wordCount / elapsedTime);
         const accuracy = calculateAccuracy(inputText, sampleText);
-        
-        // Store the results
-        storeResults(selectedDifficulty, wpm, accuracy);
-        
+                
         // Display the results
         document.getElementById('time-result').textContent = `${totalTime}s`;
         document.getElementById('wpm-result').textContent = wpm;
@@ -121,11 +98,7 @@ function checkTypingCompletion() {
         typingInput.value = ''; // Reset the input field for a new test
         startTime = undefined; // Reset the start time
         typingInput.disabled = false; // Enable the input field for a new test
-        displayPreviousResults(selectedDifficulty); // Display previous results for the selected difficulty
     });
-
-    // Initial call to display previous results for the default difficulty
-    displayPreviousResults(selectedDifficulty);
 
     // Event listener for input to color the typed text
     typingInput.addEventListener('input', function() {
