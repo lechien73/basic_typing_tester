@@ -101,10 +101,13 @@ function checkTypingCompletion() {
     });
 
     // Event listener for input to color the typed text
-    typingInput.addEventListener('input', function() {
+    typingInput.addEventListener('input', function(event) {
         startTimer();
         const inputText = typingInput.value;
         const sampleTextSpans = sampleTextDiv.querySelectorAll('span');
+        const inputWords = inputText.trim().split(/\s+/);
+        const sampleWords = sampleText.split(' ');
+    
         sampleTextSpans.forEach((charSpan, index) => {
             if (inputText[index] == null) {
                 charSpan.classList.remove('correct', 'incorrect'); // No input yet
@@ -116,6 +119,23 @@ function checkTypingCompletion() {
                 charSpan.classList.remove('correct');
             }
         });
+    
+        if (event.inputType === 'insertText' && event.data === ' ') {
+            const currentWordIndex = inputWords.length - 1;
+            if (inputWords[currentWordIndex] === sampleWords[currentWordIndex]) {
+                // Move to the next word
+                // typingInput.value += ' ';
+            } else {
+                // Highlight the incorrect word
+                sampleTextSpans.forEach((charSpan, index) => {
+                    if (index >= inputText.length - inputWords[currentWordIndex].length && index < inputText.length) {
+                        charSpan.classList.add('incorrect');
+                        charSpan.classList.remove('correct');
+                    }
+                });
+            }
+        }
+    
         checkTypingCompletion();
     });
 });
